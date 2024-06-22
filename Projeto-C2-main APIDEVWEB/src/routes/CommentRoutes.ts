@@ -1,10 +1,14 @@
-import { Router } from 'express';
-import * as commentController from '../controllers/CommentController';
+import { Router } from "express";
+import CommentController from "../controllers/CommentController";
 
-const router = Router();
+const CommentRouter = Router();
 
-router.get('/', commentController.getComments);
-router.get('/:id', commentController.getCommentById);
-router.post('/', commentController.createComment);
+CommentRouter.get("/api/posts/:postId/comments", CommentController.listComments);
 
-export default router;
+CommentRouter.post("/api/comment", CommentController.createComment);
+
+CommentRouter.patch("/api/comment/:id", CommentController.updateComment);
+
+CommentRouter.delete("/api/comment/:id", CommentController.deleteComment);
+
+export default CommentRouter;

@@ -1,12 +1,13 @@
 {
-  "name": "projeto",
+  "name": "ApiDevWeb",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx tsc",
-    "dev": "npx ts-node-dev ./src/server"
+    "build": "npx tsc && npx ts-node-dev ./src/server",
+    "dev": "npx ts-node-dev ./src/server",
+    "prisma": "npx prisma migrate dev --name init"
   },
   "keywords": [],
   "author": "",
@@ -14,7 +15,7 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/express": "^4.17.21",
-    "@types/node": "^20.14.2",
+    "@types/node": "^20.12.10",
     "prisma": "^5.13.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",

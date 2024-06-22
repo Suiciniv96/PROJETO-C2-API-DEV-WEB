@@ -1,10 +1,14 @@
-import { Router } from 'express';
-import * as postController from '../controllers/PostController';
+import { Router } from "express";
+import PostController from "../controllers/PostController";
 
-const router = Router();
+const PostRouter = Router();
 
-router.get('/', postController.getPosts);
-router.get('/:id', postController.getPostById);
-router.post('/', postController.createPost);
+PostRouter.get("/api/posts", PostController.listPosts);
 
-export default router;
+PostRouter.post("/api/post", PostController.createPost);
+
+PostRouter.patch("/api/post/:id", PostController.updatePost);
+
+PostRouter.delete("/api/post/:id", PostController.deletePost);
+
+export default PostRouter;

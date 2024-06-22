@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import UserDataBaseService from "../services/UserDataBaseService";
-import { hashPassword } from "../utils/BcryptUtils"; // Importando a função hashPassword
+import { generateHash } from "../utils/BcryptUtils";
 
 class UserController {
   constructor() {}
@@ -12,44 +12,50 @@ class UserController {
         status: "ok",
         users: users,
       });
-    } catch (error: any) { // Anotando 'error' como 'any'
-      console.error("Error listing users:", error);
-      res.status(500).json({
+    } catch (error) {
+      console.log(error);
+      res.json({
         status: "error",
-        message: "Failed to list users",
+        message: error,
       });
     }
   }
 
   async createUser(req: Request, res: Response) {
     const body = req.body;
+    console.log(body);
 
     if (!body.email || !body.name || !body.password) {
-      res.status(400).json({
+      res.json({
         status: "error",
-        message: "Missing parameters",
+        message: "Falta parâmetros",
       });
       return;
     }
 
-    try {
-      const hashedPassword = await hashPassword(body.password); // Utilizando a função hashPassword
+    const hashPassword = await generateHash(body.password);
 
-      const newUser = await UserDataBaseService.insertDBUser({
+    if(!hashPassword){
+      res.json({
+        status: "error",
+        message: "Erro ao criptografar senha ...",
+      });
+    }
+
+    try {
+      const newuser = await UserDataBaseService.insertDBUser({
         name: body.name,
         email: body.email,
-        password: hashedPassword,
+        password: hashPassword as string
       });
-
       res.json({
         status: "ok",
-        newUser: newUser,
+        newuser: newuser,
       });
-    } catch (error: any) { // Anotando 'error' como 'any'
-      console.error("Error creating user:", error);
-      res.status(500).json({
+    } catch (error) {
+      res.json({
         status: "error",
-        message: error.message || "Failed to create user", // Utilizando error.message se disponível
+        message: error,
       });
     }
   }
@@ -57,20 +63,18 @@ class UserController {
   async updateUser(req: Request, res: Response) {
     const id = req.params.id;
     if (!id) {
-      res.status(400).json({
+      res.json({
         status: "error",
-        message: "Missing ID",
+        message: "Faltou o ID",
       });
-      return;
     }
 
     const { name, email } = req.body;
     if (!email || !name) {
-      res.status(400).json({
+      res.json({
         status: "error",
-        message: "Missing parameters",
+        message: "Falta parâmetros",
       });
-      return;
     }
 
     try {
@@ -81,16 +85,14 @@ class UserController {
         },
         parseInt(id)
       );
-
       res.json({
         status: "ok",
-        updatedUser: updatedUser,
+        newuser: updatedUser,
       });
-    } catch (error: any) { // Anotando 'error' como 'any'
-      console.error("Error updating user:", error);
-      res.status(500).json({
+    } catch (error) {
+      res.json({
         status: "error",
-        message: "Failed to update user",
+        message: error,
       });
     }
   }
@@ -98,11 +100,10 @@ class UserController {
   async deleteUser(req: Request, res: Response) {
     const id = req.params.id;
     if (!id) {
-      res.status(400).json({
+      res.json({
         status: "error",
-        message: "Missing ID",
+        message: "Faltou o ID",
       });
-      return;
     }
 
     try {
@@ -110,19 +111,14 @@ class UserController {
       if (response) {
         res.json({
           status: "ok",
-          message: "User deleted successfully",
-        });
-      } else {
-        res.status(404).json({
-          status: "error",
-          message: "User not found",
+          message: "usuário deletado com sucesso",
         });
       }
-    } catch (error: any) { // Anotando 'error' como 'any'
-      console.error("Error deleting user:", error);
-      res.status(500).json({
+    } catch (error) {
+      console.log(error);
+      res.json({
         status: "error",
-        message: "Failed to delete user",
+        message: error,
       });
     }
   }

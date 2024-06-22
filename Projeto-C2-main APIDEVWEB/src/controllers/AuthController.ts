@@ -1,29 +1,55 @@
-import { Request, Response } from 'express';
-import * as authService from '../services/AuthService';
-import * as bcryptUtils from '../utils/BcryptUtils';
+import { Request, Response } from "express";
+import AuthService from "../services/AuthService";
+import { generateHash } from "../utils/BcryptUtils";
 
-export const register = async (req: Request, res: Response) => {
-  try {
-    const { email, password } = req.body;
-    const hashedPassword = await bcryptUtils.hashPassword(password);
-    const newUser = await authService.createUser({ email, password: hashedPassword });
-    res.status(201).json(newUser);
-  } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
 
-export const login = async (req: Request, res: Response) => {
-  try {
-    const { email, password } = req.body;
-    const user = await authService.getUserByEmail(email);
-    if (user && await bcryptUtils.comparePassword(password, user.password)) {
-      // Generate token or session
-      res.status(200).json({ message: 'Login successful' });
-    } else {
-      res.status(401).json({ error: 'Invalid credentials' });
+class AuthController {
+    constructor() { }
+
+    async signUp(req: Request, res: Response) {
+        const body = req.body;
+        console.log(body);
+
+        if (!body.email || !body.name || !body.password) {
+            res.json({
+                status: "error",
+                message: "Falta parâmetros",
+            });
+            return;
+        }
+
+        const hashPassword = await generateHash(body.password);
+
+        if (!hashPassword) {
+            res.json({
+                status: "error",
+                message: "Erro ao criptografar senha ...",
+            });
+        }
+
+        try {
+            const newuser = await AuthService.signUp({
+                name: body.name,
+                email: body.email,
+                password: hashPassword as string
+            });
+            res.json({
+                status: "ok",
+                newuser: newuser,
+            });
+        } catch (error) {
+            res.json({
+                status: "error",
+                message: error,
+            });
+        }
     }
-  } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
+
+    async signIn() {
+
+    }
+
+    async signOut() {
+
+    }
+}

@@ -1,20 +1,19 @@
-import express from 'express';
-import userRoutes from './routes/UserRoutes';
-import authRoutes from './routes/AuthRoutes';
-import postRoutes from './routes/PostRoutes';
-import commentRoutes from './routes/CommentRoutes';
+import express from "express";
+import AuthRouter from "./routes/AuthRoutes";
+import UserRouter from "./routes/UserRoutes";
+import PostRouter from "./routes/PostRoutes";
+import CommentRouter from "./routes/CommentRoutes";
+
+const port = 3000;
 
 const app = express();
-
 app.use(express.json());
 
-app.use('/users', userRoutes);
-app.use('/auth', authRoutes);
-app.use('/posts', postRoutes);
-app.use('/comments', commentRoutes);
+app.use(UserRouter);
+app.use(AuthRouter);
+app.use(PostRouter);
+app.use(CommentRouter);
 
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(port, function () {
+  console.log("Servidor rodando na porta " + port);
 });

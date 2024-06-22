@@ -1,34 +1,127 @@
-import { Request, Response } from 'express';
-import * as commentService from '../services/CommentService';
+import { Request, Response } from "express";
+import CommentDataBaseService from "../services/CommentDataBaseService";
 
-export const getComments = async (req: Request, res: Response) => {
-  try {
-    const comments = await commentService.getAllComments();
-    res.status(200).json(comments);
-  } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
+class CommentController {
+  constructor() {}
 
-export const getCommentById = async (req: Request, res: Response) => {
-  try {
-    const comment = await commentService.getCommentById(Number(req.params.id));
-    if (comment) {
-      res.status(200).json(comment);
-    } else {
-      res.status(404).json({ error: 'Comment not found' });
+  async listComments(req: Request, res: Response) {
+    const postId = req.params.postId;
+    if (!postId) {
+      res.json({
+        status: "error",
+        message: "Faltou o postId",
+      });
     }
-  } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
 
-export const createComment = async (req: Request, res: Response) => {
-  try {
-    const { content, postId, userId } = req.body;
-    const newComment = await commentService.createComment({ content, postId, userId });
-    res.status(201).json(newComment);
-  } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
+    try {
+      const comments = await CommentDataBaseService.listDBComments(parseInt(postId));
+      res.json({
+        status: "ok",
+        comments: comments,
+      });
+    } catch (error) {
+      console.log(error);
+      res.json({
+        status: "error",
+        message: error,
+      });
+    }
   }
-};
+
+  async createComment(req: Request, res: Response) {
+    const body = req.body;
+    console.log(body);
+
+    if (!body.content || !body.postId) {
+      res.json({
+        status: "error",
+        message: "Falta parâmetros",
+      });
+      return;
+    }
+
+    try {
+      const newComment = await CommentDataBaseService.insertDBComment({
+        content: body.content,
+        post: {
+          connect: {
+            id: body.postId,
+          },
+        }
+      });
+      res.json({
+        status: "ok",
+        newComment: newComment,
+      });
+    } catch (error) {
+      res.json({
+        status: "error",
+        message: error,
+      });
+    }
+  }
+
+  async updateComment(req: Request, res: Response) {
+    const id = req.params.id;
+    if (!id) {
+      res.json({
+        status: "error",
+        message: "Faltou o ID",
+      });
+    }
+
+    const { content } = req.body;
+    if (!content) {
+      res.json({
+        status: "error",
+        message: "Falta parâmetros",
+      });
+    }
+
+    try {
+      const updatedComment = await CommentDataBaseService.updateDBComment(
+        {
+          content: content,
+        },
+        parseInt(id)
+      );
+      res.json({
+        status: "ok",
+        updatedComment: updatedComment,
+      });
+    } catch (error) {
+      res.json({
+        status: "error",
+        message: error,
+      });
+    }
+  }
+
+  async deleteComment(req: Request, res: Response) {
+    const id = req.params.id;
+    if (!id) {
+      res.json({
+        status: "error",
+        message: "Faltou o ID",
+      });
+    }
+
+    try {
+      const response = await CommentDataBaseService.deleteDBComment(parseInt(id));
+      if (response) {
+        res.json({
+          status: "ok",
+          message: "Comentário deletado com sucesso",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      res.json({
+        status: "error",
+        message: error,
+      });
+    }
+  }
+}
+
+export default new CommentController();
