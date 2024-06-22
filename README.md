@@ -1,76 +1,61 @@
-## Instruções
- 1. Após clonar o projeto, execute ```npm install``` para instalar as dependências
- 2. Execute ```npm run prisma``` para gerar o banco de dados
- 3. Execute ```npm run build``` para executar a aplicação
- 4. Agora é só utilizar a API
+Claro! Aqui está um README.md bem apresentado e informativo para o seu projeto:
 
-## Exemplos
-### Criar usuário
-Requisição (POST):
+---
+
+# API Node.js com Prisma e Docker 🚀
+
+Bem-vindo ao Projeto API Node.js! Este projeto demonstra uma API robusta utilizando Node.js, Prisma para ORM e Docker para facilitar a configuração do ambiente de desenvolvimento. Continue lendo para aprender como configurar, executar e utilizar esta poderosa API.
+
+## Índice
+
+- [Instruções de Configuração](#instruções-de-configuração)
+- [Exemplos de Uso](#exemplos-de-uso)
+
+## Instruções de Configuração
+
+1. **Clone o repositório**
+   ```sh
+   git clone https://github.com/seuusuario/seuprojeto.git
+   cd seuprojeto
+   ```
+
+2. **Instale as dependências**
+   ```sh
+   npm install
+   ```
+
+3. **Gere o banco de dados**
+   ```sh
+   npm run prisma
+   ```
+
+4. **Compile a aplicação**
+   ```sh
+   npm run build
+   ```
+
+5. **Execute a aplicação**
+   ```sh
+   npm start
+   ```
+
+6. **Acesse a API em** `http://localhost:3000`
+
+## Exemplos de Uso
+
+### Criar Usuário
+
+Para criar um novo usuário, envie uma requisição POST para:
 ```
 http://localhost:3000/api/user
 ```
 
-Body:
-```json
-{
-        "name": "nomeDeUsuario",
-        "email": "seuemail@gmail.com",
-        "password": "suasenha123"
-}
-```
+## Contribuição
 
-### Listar usuários
-Requisição (GET):
-```
-http://localhost:3000/api/users
-```
-  
----
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e enviar pull requests.
 
-### Criar post
-Requisição (POST):
-```
-http://localhost:3000/api/post
-```
-
-Body:
-```json
-{
-        "title": "Título do post",
-        "content": "Esse aqui é o conteúdo do post",
-        "authorId": 1,
-        "published": true
-}
-```
-Onde `authorId` é o ID do usuário criador do post
-### Listar posts
-Requisição (GET):
-```
-http://localhost:3000/api/posts
-```
-
----
-
-### Criar comentário
-Requisição (POST):
-```
-http://localhost:3000/api/comment
-```
-
-Body:
-```json
-{
-        "content": "Este é o conteúdo do comentario do post",
-        "postId": 3
-}
-```
-Onde `postId` é o ID do post em que o comentário será adicionado
-
-### Listar comentários por post
-Requisição (GET):
-```
-http://localhost:3000/api/posts/3/comments
-```
-
-Onde '3' é o ID do post do qual serão obtidos os comentários.
+1. Fork o projeto
+2. Crie um branch para sua feature (`git checkout -b feature/nova-feature`)
+3. Faça commit das suas mudanças (`git commit -am 'Adiciona nova feature'`)
+4. Push para o branch (`git push origin feature/nova-feature`)
+5. Abra um Pull Request
