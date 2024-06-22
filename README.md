@@ -1,7 +1,3 @@
-Claro! Aqui está um README.md bem apresentado e informativo para o seu projeto:
-
----
-
 # API Node.js com Prisma e Docker 🚀
 
 Bem-vindo ao Projeto API Node.js! Este projeto demonstra uma API robusta utilizando Node.js, Prisma para ORM e Docker para facilitar a configuração do ambiente de desenvolvimento. Continue lendo para aprender como configurar, executar e utilizar esta poderosa API.
